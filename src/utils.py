@@ -10,9 +10,10 @@ def parse_comma_separated_col(x):
     return [item.strip() for item in x.split(',')]
 
 def clean_dataset(df):
+    
     cols_to_drop = [
     'poster_path', 'backdrop_path', 'homepage', 
-    'imdb_id', 'original_title', 'overview', 'tagline']
+    'imdb_id', 'original_title', 'overview', 'tagline',]
     df = df.drop(columns=[c for c in cols_to_drop if c in df.columns])
     
     df = df.dropna(subset=['budget']) 
@@ -23,9 +24,11 @@ def clean_dataset(df):
     
     df = df.dropna(subset=['vote_average'])
 
+    
     if 'id' in df.columns:
         df = df.drop_duplicates(subset=['id'])
-        
+
+    
     return df
 
 def process_budget_revenue(df):
@@ -38,7 +41,7 @@ def process_budget_revenue(df):
 
 def feature_engineering_pipeline(df):
     list_cols = ['genres', 'production_companies', 'production_countries', 
-                 'spoken_languages', 'keywords']
+                 'spoken_languages']
     
     for col in list_cols:
         if col in df.columns:
@@ -47,8 +50,6 @@ def feature_engineering_pipeline(df):
     if 'production_companies' in df.columns:
         df['companies_count'] = df['production_companies'].apply(len)
 
-    if 'keywords' in df.columns:
-        df['keywords_count'] = df['keywords'].apply(len)
 
     if 'release_date' in df.columns:
         df['release_date'] = pd.to_datetime(df['release_date'], errors='coerce')
@@ -57,3 +58,14 @@ def feature_engineering_pipeline(df):
         df['release_day_of_week'] = df['release_date'].dt.dayofweek
     
     return df
+
+
+def month_to_season(m):
+    if m in [12, 1, 2]:
+        return 'winter'
+    elif m in [3, 4, 5]:
+        return 'spring'
+    elif m in [6, 7, 8]:
+        return 'summer'
+    else:
+        return 'autumn'
