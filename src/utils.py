@@ -17,7 +17,9 @@ def clean_dataset(df):
     df = df.drop(columns=[c for c in cols_to_drop if c in df.columns])
     
     df = df.dropna(subset=['budget']) 
-    df = df[df['vote_count'] > 300] 
+    df = df[df['vote_count'] > 100] 
+
+
     
     if 'status' in df.columns:
         df = df[df['status'] == 'Released']
@@ -33,11 +35,21 @@ def clean_dataset(df):
 
 def process_budget_revenue(df):
     cols = ['budget', 'revenue']
+    
     for col in cols:
         if col in df.columns:
+        
             df[col] = pd.to_numeric(df[col], errors='coerce')
-            df[col] = df[col].replace(0.0, np.nan)
+            
+            df[col] = df[col].replace(0, np.nan)
+
+    df = df.dropna(subset=['budget', 'revenue'])
+
+    df = df[df['budget'] > 0]
+    df = df[df['revenue'] > 0]
+
     return df
+
 
 def feature_engineering_pipeline(df):
     list_cols = ['genres', 'production_companies', 'production_countries', 
