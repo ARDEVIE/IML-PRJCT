@@ -31,9 +31,6 @@ def clean_dataset(df):
     if 'vote_count' in df.columns:
         df = df[df['vote_count'] >= 50] 
 
-    if 'status' in df.columns:
-        df = df[df['status'] == 'Released']
-    
     df = df.dropna(subset=['vote_average'])
     
     if 'id' in df.columns:
